@@ -1,0 +1,7 @@
+<h2>Main Level</h2>
+<div *ngIf="!this.currentUser">
+    <app-users (userLoggedIn)="updatePage()"></app-users>
+</div>
+<div *ngIf="this.currentUser">
+    <app-dashboard></app-dashboard>
+</div>

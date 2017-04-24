@@ -1,0 +1,37 @@
+<h4>Registration Level</h4>
+<div>
+    <form (submit)="createUser()">
+        <div>
+
+            <label for="email">E-mail: </label>
+            <br>
+            <label for="username">Username: </label>
+            <br>
+            <label for="firstName">First Name: </label>
+            <br>
+            <label for="lastName">Last Name: </label>
+            <br>
+            <label for="password">Password: </label>
+            <br>
+            <label for="passwordConfirm">Confirm Password: </label>
+            <br>
+        </div>
+        <div>
+
+            <input type="text" name="email" placeholder="E-Mail" [(ngModel)]="createdUser.email">
+            <br>
+            <input type="text" name="username" placeholder="Username" [(ngModel)]="createdUser.username">
+            <br>
+            <input type="text" name="firstName" placeholder="First Name" [(ngModel)]="createdUser.firstName">
+            <br>
+            <input type="text" name="lastName" placeholder="Last Name" [(ngModel)]="createdUser.lastName">
+            <br>
+            <input type="password" name="password" placeholder="Password" [(ngModel)]="createdUser.password">
+            <br>
+            <input type="password" name="passwordConfirm" placeholder="Confirm Password" [(ngModel)]="createdUser.passwordConfirm">
+            <br>
+            <input type="submit" name="Create New User">
+        </div>
+    </form>
+    <button id="SwitchButton" (click)="StopReg()">Back to Login</button>
+</div>

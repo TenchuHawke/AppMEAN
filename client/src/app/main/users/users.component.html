@@ -1,0 +1,8 @@
+<h3>User Level</h3>
+<button (click)="UserLoggedIn()">Log in</button>
+<div *ngIf="!this.newUserSwitch">
+    <app-login [startReg]="newUserSwitch" (updateReg)="updateSwitch($event)" (login)="UserLoggedIn()"></app-login>
+</div>
+<div *ngIf="this.newUserSwitch">
+    <app-registration [startReg]="newUserSwitch" (updateReg)="updateSwitch($event)" (login)="UserLoggedIn()"></app-registration>
+</div>

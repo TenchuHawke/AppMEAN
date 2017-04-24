@@ -1,0 +1,30 @@
+{
+    "name": "meanapp",
+    "version": "0.0.1",
+    "description": "A full stack mean project",
+    "main": "client/dist/index.html",
+    "dependencies": {
+        "body-parser": "^1.17.1",
+        "express": "^4.15.2",
+        "express-server": "^0.7.0",
+        "mongoose": "^4.9.5",
+        "password-hash": "^1.2.2"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/TenchuHawke/MEANapplication.git"
+    },
+    "keywords": [
+        "MEAN"
+    ],
+    "author": "Jeff \"Hawke\" Ravatt",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/TenchuHawke/MEANapplication/issues"
+    },
+    "homepage": "https://github.com/TenchuHawke/MEANapplication#readme"
+}
