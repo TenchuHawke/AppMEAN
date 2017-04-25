@@ -19,17 +19,13 @@ export class UserService {
 
   checkUser(user, callback?) : any {
     let self = this
-    console.log ("CheckUser service started")
     this.http.post("/checkUser", user)
       .map((response : Response) => response.json())
       .subscribe(
         data => {
-          console.log("Data:", data)
           if (data.errors){
-            console.log (data)
             for (var i = 0; i< data.errors.length; i++){
               self.errors.push(data.errors[i])
-              console.log(data.errors[i])
             }
             if (callback){
               callback(false)
@@ -43,23 +39,20 @@ export class UserService {
           }
         }, 
         e=> {
-          console.log(e)
           if (callback){
             callback(false)
           }},
-        () => {console.log("Check Users complete.")
+        () => {
 
           })
   }
 
   createUser(user, callback?) : any {
     let self = this
-    console.log ("Creating User Service Started")
     this.http.post("/createUser", user)
       .map((response : Response) => response.json())
       .subscribe(
         (data)=> {
-          console.log("Data:",data)
           if(data.errors){
             for (var error of data.errors){
               self.errors.push(error)
@@ -67,10 +60,9 @@ export class UserService {
           } else {
             this.currentUser=data.user as User
           }
-          console.log("User successfully created")}, 
-        e=>console.log("bobo"), 
+        }, 
+        e=>{}, 
         ()=> {
-          console.log("Creating User Service Ended.")
           if (callback){
             callback()
           }
@@ -78,12 +70,10 @@ export class UserService {
   }
 
     printCE(){
-    console.log("Print Errors: ", this.errors)
 
   }
 
   lookupCurrentUser(callback?) : any {
-    console.log("starting lookup")
     let self = this
     this.http.get("/lookup")
     .map(result=>result.json()) 
@@ -91,18 +81,15 @@ export class UserService {
       function (result) {
         self.errors = [];
         if (result.error){
-          console.log("Error:",  result.error)
           // self.errors.push(result.error)
         } else {
         let temp = result as User; 
-        console.log("returned successfully:", temp)
         self.currentUser = temp
-        console.log("Logged In :", self.currentUser)
         }
       },
-      function (err) {console.log(err)},
+      function (err) {
+      },
       function () {
-        console.log("Lookup Complete")
         if (callback){
           callback()
         }}
@@ -110,13 +97,11 @@ export class UserService {
 
     clearUser(callback?){
       this.currentUser = new User;
-      console.log("cleared current user")
       this.http.get("/clear")
       .subscribe(
         ()=>"",
-        (e)=>console.log(e),
+        (e)=>{},
         ()=>{
-          console.log("Session Cleared")
           if (callback){
             callback()
           }}

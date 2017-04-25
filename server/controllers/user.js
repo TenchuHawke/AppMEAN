@@ -16,15 +16,15 @@ module.exports = {
     },
     createUser: function(req, res) {
         var Error = []
-        User.findOne({ "email": req.body.email },
+        User.find({ "email": req.body.email },
             (err, data) => {
-                if (data) {
+                if (data.length > 0) {
                     Error.push("Email already exists")
                 }
             })
-        User.findOne({ "username": req.body.username },
+        User.find({ "username": req.body.username },
             (err, data) => {
-                if (data) {
+                if (data.length) {
                     Error.push("\nUsername already exists")
                 }
             })
@@ -33,9 +33,11 @@ module.exports = {
             var newUser = new User(req.body)
             newUser.password = pw
             newUser.save(function(err, data) {
-                if (err) {
-                    for (var errName in err.errors) {
-                        Error.push(err.errors[errName].message)
+                if (err || Error.length > 0) {
+                    if (err) {
+                        for (var errName in err.errors) {
+                            Error.push(err.errors[errName].message)
+                        }
                     }
                     res.json({ added: false, errors: Error })
                     return

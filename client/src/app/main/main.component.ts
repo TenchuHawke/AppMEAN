@@ -24,6 +24,7 @@ export class MainComponent implements OnInit {
     this.ApplicationRef.tick()
   }
   clearSession(){
+    this.currentUser = new User;
     this._userService.clearUser(
     this.ApplicationRef.tick() )
   }

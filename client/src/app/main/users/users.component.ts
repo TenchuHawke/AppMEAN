@@ -17,11 +17,9 @@ export class UsersComponent implements OnInit {
 
   updateSwitch($event) {
     this.newUserSwitch = $event.value
-    console.log(this.newUserSwitch)
     this.userLoggedIn.emit()
   }
   UserLoggedIn($event){
     this.userLoggedIn.emit("true")
-    console.log("Main Switch.")
   }
 }

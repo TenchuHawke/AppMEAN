@@ -31,19 +31,17 @@ export class RegistrationComponent implements OnInit {
   }
 
   StopReg(){
-    console.log("stopReg")
     this.startReg = false
     this.updateReg.emit({value: false})
   }
 
   createUser(){
-    console.log("Start Create User")
+    this._userService.errors = []
     this._userService.createUser(this.createdUser, ()=>this.login.emit("true"));
     this.login.emit("true");
     
   }
     notifyLoggedIn(callback?){
-    console.log("emitting")
     this.login.emit("true")
   }
 }
