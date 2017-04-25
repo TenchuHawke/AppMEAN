@@ -3,6 +3,10 @@
     <app-users (userLoggedIn)="updatePage()"></app-users>
 </div>
 <div *ngIf="currentUser._id">
-    <button (click)="clearSession()">Logout</button>
+    <h4>Welcome {{currentUser.firstName}}</h4>
+    <p>
+        Click here to <button (click)="clearSession()">Logout</button>
+    </p>
+    <hr>
     <app-dashboard></app-dashboard>
 </div>
