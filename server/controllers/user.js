@@ -6,10 +6,8 @@ const saltRounds = 10
 module.exports = {
 
     get_all_users: function(req, res) {
-        console.log("get all users")
         User.find({}, function(err, data) {
             if (err) {
-                console.log("User find Error", err)
                 res.json(err)
             } else {
                 res.json(data)
@@ -17,76 +15,79 @@ module.exports = {
         })
     },
     createUser: function(req, res) {
-        console.log("Create User:", req.body)
-        if (req.body.password == req.body.passwordConfirm) {
+        var Error = []
+        User.findOne({ "email": req.body.email },
+            (err, data) => {
+                if (data) {
+                    Error.push("Email already exists")
+                }
+            })
+        User.findOne({ "username": req.body.username },
+            (err, data) => {
+                if (data) {
+                    Error.push("\nUsername already exists")
+                }
+            })
+        if (Error.length == 0 && req.body.password == req.body.passwordConfirm) {
             var pw = hash.generate(req.body.password)
             var newUser = new User(req.body)
             newUser.password = pw
-            console.log(newUser.password)
             newUser.save(function(err, data) {
                 if (err) {
-                    console.log("user create error", err)
-                    res.json({ added: false, error: err })
+                    for (var errName in err.errors) {
+                        Error.push(err.errors[errName].message)
+                    }
+                    res.json({ added: false, errors: Error })
+                    return
                 } else {
                     req.session.CurrentUser = data
-                    console.log("Logged in user ID:", req.session.CurrentUser)
-                    res.json({ added: true })
+                    res.json({ added: true, user: req.session.CurrentUser })
+                    return
                 }
             })
         } else {
-            console.log("Password and Confirmation must match.")
-            res.json({ added: false, error: "Password and Confirmation password must match." })
+            if (req.body.password = !req.body.passwordConfirm) {
+                Error.push("Password and Confirmation must match")
+            }
+            res.json({ added: false, errors: Error })
         }
     },
     checkUser: function(req, res) {
-        console.log("server.users.js.check user")
+        let errors = []
         User.findOne({ "email": req.body.email },
             (err, data) => {
                 if (!data) {
-                    console.log("User find Error", err)
-                    res.json(err)
+                    errors.push("Email or Password not found.")
+                    res.json({ errors: errors })
                 } else {
-                    console.log("found")
-                    let checkUser = data;
                     if (hash.verify(req.body.password, data.password)) {
-                        console.log("password succeeded")
-                        req.session.CurrentUser = checkUser;
-                        console.log("current user:", req.session.CurrentUser)
+                        req.session.CurrentUser = data;
                         res.json(data)
                     } else {
-                        console.log("password fail")
-                        res.json({ error: "Email and Password don't match." })
-
+                        errors.push("Email or Password not found.")
+                        res.json({ errors: errors })
                     }
                 }
             })
     },
     deleteUser: function(req, res) {
-        console.log("delete user")
         User.remove({ _id: req.params.id }, function(err) {
             if (err) {
-                console.log("User delete error")
                 res.json(false)
             } else {
-                console.log("User Deleted")
                 res.json(true)
             }
         })
     },
+
     lookupCurrentUser: function(req, res) {
-            console.log("lookup")
-            console.log(req.session.CurrentUser)
-            if (req.session.CurrentUser) {
-                console.log("sending...")
-                Promise.resolve(res.json(req.session.CurrentUser))
-            } else { res.json(Promise.resolve("User Not Logged in")) }
+        if (req.session.CurrentUser) {
+            res.json(req.session.CurrentUser)
+        } else {
+            res.json({ error: "Not logged in" })
         }
-        // lookupCurrentUser: function(req, res) {
-        //     console.log("lookup current user")
-        // if (res.session.CurrentUser) {
-        //     res.json(res.session.CurrentUser)
-        // } else {
-        //     res.json("Not logged in")
-        // }
-        // }
+    },
+    clearSession: function(req, res) {
+        req.session.CurrentUser = null;
+    }
 }

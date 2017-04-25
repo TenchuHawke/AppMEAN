@@ -1,5 +1,10 @@
-<h4>Login Level</h4>
-<p> User: {{_userService.currentUser | json }}</p>
+<h4>Existing User Login</h4>
+
+<div *ngIf="this._userService.errors.length >= 1">
+    <ul>
+        <li *ngFor="let error of this._userService.errors">{{error}}</li>
+    </ul>
+</div>
 <div>
     <form (submit)="checkUser()">
         <div>
@@ -18,6 +23,4 @@
 </div>
 <div>
     <button id="SwitchButton" (click)="StartReg()">New User Registration</button>
-
-    <button id="Lookupbutton" (click)="LookupCU()">Lookup User</button>
 </div>

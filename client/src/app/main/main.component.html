@@ -1,7 +1,8 @@
 <h2>Main Level</h2>
-<div *ngIf="!this.currentUser">
+<div *ngIf="!currentUser._id">
     <app-users (userLoggedIn)="updatePage()"></app-users>
 </div>
-<div *ngIf="this.currentUser">
+<div *ngIf="currentUser._id">
+    <button (click)="clearSession()">Logout</button>
     <app-dashboard></app-dashboard>
 </div>

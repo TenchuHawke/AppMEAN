@@ -1,0 +1,16 @@
+#SwitchButton {
+    margin-left: 250px;
+}
+
+div {
+    display: inline-block;
+    vertical-align: top;
+}
+
+label {
+    line-height: 135%
+}
+
+.top {
+    display: block;
+}

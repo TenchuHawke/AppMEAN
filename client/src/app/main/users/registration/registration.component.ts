@@ -21,7 +21,9 @@ export class RegistrationComponent implements OnInit {
   
   createdUser : User = new User;
   
-  constructor(private _userService: UserService) { }
+  constructor(private _userService: UserService) { 
+    this._userService.errors = []
+  }
 
   ngOnInit(  ) {
     this.createdUser.password = "password"
@@ -36,7 +38,12 @@ export class RegistrationComponent implements OnInit {
 
   createUser(){
     console.log("Start Create User")
-    this._userService.createUser(this.createdUser);
+    this._userService.createUser(this.createdUser, ()=>this.login.emit("true"));
+    this.login.emit("true");
+    
+  }
+    notifyLoggedIn(callback?){
+    console.log("emitting")
     this.login.emit("true")
   }
 }

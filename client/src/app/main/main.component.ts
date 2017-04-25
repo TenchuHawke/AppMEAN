@@ -1,5 +1,5 @@
 import { User } from './users/user';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ApplicationRef } from '@angular/core';
 import { UserService } from "app/main/users/user.service";
 
 @Component({
@@ -11,18 +11,20 @@ export class MainComponent implements OnInit {
 
   currentUser: User
   // logged in user.
-  constructor(private _userService : UserService) {
-    this.currentUser=null;
+  constructor(private _userService : UserService, private ApplicationRef : ApplicationRef) {
+    this.currentUser=this._userService.currentUser;
   }
 
   ngOnInit() {
   }
 
-  authUser(){
-    console.log("authUser()")
-  }
+
   updatePage(){
-    console.log("Update Page...")
-    this.currentUser = this._userService.currentUser;
+    this.currentUser=this._userService.currentUser
+    this.ApplicationRef.tick()
+  }
+  clearSession(){
+    this._userService.clearUser(
+    this.ApplicationRef.tick() )
   }
 }

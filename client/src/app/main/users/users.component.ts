@@ -20,8 +20,8 @@ export class UsersComponent implements OnInit {
     console.log(this.newUserSwitch)
     this.userLoggedIn.emit()
   }
-  UserLoggedIn(){
+  UserLoggedIn($event){
     this.userLoggedIn.emit("true")
-    console.log("Logged In Switch.")
+    console.log("Main Switch.")
   }
 }

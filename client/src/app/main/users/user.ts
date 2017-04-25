@@ -9,11 +9,12 @@ export class User {
     public createdAt = Date
     public updatedAt = Date
     
-    constructor (){
-        this.email=""
-        this.userName=""
-        this.firstName=""
-        this.lastName=""
-        this.password=""
+    constructor (_id?, email?, username?, firstname?, lastname?, password?){
+        this.email=email
+        this.userName=username
+        this.firstName=firstname
+        this.lastName=lastname
+        this.password=password
+        this._id = _id
     }
 }

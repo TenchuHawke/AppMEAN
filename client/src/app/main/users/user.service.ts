@@ -3,71 +3,123 @@ import { User } from './user';
 import { Http, Request, Headers, RequestOptions, Response } from '@angular/http';
 import 'rxjs'
 
+
 @Injectable()
 export class UserService {
-  currentUser 
+  currentUser : User
   USERS : any[]
-  errors
-  constructor(private http: Http) { }
+  errors : String[] =[]
+  self = this
+  constructor(private http: Http) { 
+    this.currentUser = new User
+    this.lookupCurrentUser()
+    this.errors = []
+    
+  }
 
-  checkUser(user, callback?){
+  checkUser(user, callback?) : any {
+    let self = this
     console.log ("CheckUser service started")
     this.http.post("/checkUser", user)
-      .map((response : Response) => response.json)
-      .subscribe(data => {this.currentUser = this.currentUser}, e=> console.log(e),() => console.log("Check Users complete."))
+      .map((response : Response) => response.json())
+      .subscribe(
+        data => {
+          console.log("Data:", data)
+          if (data.errors){
+            console.log (data)
+            for (var i = 0; i< data.errors.length; i++){
+              self.errors.push(data.errors[i])
+              console.log(data.errors[i])
+            }
+            if (callback){
+              callback(false)
+            }
+          } 
+          else {
+            self.currentUser = data as User
+            if (callback){
+              callback(true)
+            }
+          }
+        }, 
+        e=> {
+          console.log(e)
+          if (callback){
+            callback(false)
+          }},
+        () => {console.log("Check Users complete.")
+
+          })
   }
 
-  createUser(user, callback?) {
+  createUser(user, callback?) : any {
+    let self = this
     console.log ("Creating User Service Started")
     this.http.post("/createUser", user)
-      .map((response : Response) => {this.currentUser = response.json})
-      .subscribe(()=>this.updateUser(), e=>console.log(e), ()=> console.log("Creating User Service Ended."))
-  }
-  
-  updateUser(callback?){
-    this.http.get("/checkCurrentUser")
-      .map((response : Response) => response.json)
-      .subscribe(data=>
-      {
-        console.log("success");
-        this.lookupCurrentUser()
-      }, 
-      ()=> console.log("failure"), 
-      ()=> console.log("Lookup Complete"))
+      .map((response : Response) => response.json())
+      .subscribe(
+        (data)=> {
+          console.log("Data:",data)
+          if(data.errors){
+            for (var error of data.errors){
+              self.errors.push(error)
+            }
+          } else {
+            this.currentUser=data.user as User
+          }
+          console.log("User successfully created")}, 
+        e=>console.log("bobo"), 
+        ()=> {
+          console.log("Creating User Service Ended.")
+          if (callback){
+            callback()
+          }
+    })
   }
 
-  // lookupCurrentUser(){
-  //   console.log("Lookup - Service")
-  //   this.http.get('/lookupCurrentUser')
-  //   .map((response: Response)=> response.json)
-  //       .subscribe(data=> console.log("beans", data), e=> console.log(e),() => console.log("looked up......."))
-    // .map((response : Response) => response.json)
-    //   .subscribe(data =>{
-    //     this.currentUser = data
-    //   },
-    //     err => this.errors = err, 
-    //     () => console.log("Lookup Complete"))
-  // }
-    // lookupCurrentUser(){
-    // console.log("Lookup User:")
-    // return this.http.get('/LookupCU' )
-    // .map((response : Response) => response.json)
-    // .subscribe(data=> 
-    // {
-    //   console.log("beans", data)
-    //   this.currentUser = data
-    // }
-    // , e=> console.log(e),() => console.log("looked up......."))
-    // }
-    lookupCurrentUser() : Promise<User> {
-      return this.http.get('/lookupCurrentUser')
-        .toPromise()
-        .then(response => response.json().data as User)
-        .catch(this.handleError)
-    }
+    printCE(){
+    console.log("Print Errors: ", this.errors)
 
-    private handleError(error:any): Promise<any>{
-      console.error('and error occurred', error);
-      return Promise.reject(error.message || error)
+  }
+
+  lookupCurrentUser(callback?) : any {
+    console.log("starting lookup")
+    let self = this
+    this.http.get("/lookup")
+    .map(result=>result.json()) 
+    .subscribe(
+      function (result) {
+        self.errors = [];
+        if (result.error){
+          console.log("Error:",  result.error)
+          // self.errors.push(result.error)
+        } else {
+        let temp = result as User; 
+        console.log("returned successfully:", temp)
+        self.currentUser = temp
+        console.log("Logged In :", self.currentUser)
+        }
+      },
+      function (err) {console.log(err)},
+      function () {
+        console.log("Lookup Complete")
+        if (callback){
+          callback()
+        }}
+    )}
+
+    clearUser(callback?){
+      this.currentUser = new User;
+      console.log("cleared current user")
+      this.http.get("/clear")
+      .subscribe(
+        ()=>"",
+        (e)=>console.log(e),
+        ()=>{
+          console.log("Session Cleared")
+          if (callback){
+            callback()
+          }}
+      )
     }
 }

@@ -1,6 +1,9 @@
+import { Http, Request, Headers, RequestOptions, Response } from '@angular/http';
+import 'rxjs'
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { UserService } from './../user.service';
 import { User } from './../user';
+
 
 @Component({
   selector: 'app-login',
@@ -12,35 +15,31 @@ export class LoginComponent implements OnInit {
   @Output() updateReg = new EventEmitter();
   @Output() login = new EventEmitter();
 
-  loginUser : User = new User
-  currentUser : User
+  loginUser : User = new User()
+  currentUser  = this._userService.currentUser
 
-  constructor(private _userService : UserService) {
+  constructor(private http: Http, private _userService : UserService) {
   }
 
   ngOnInit() {
-    this.currentUser = this._userService.currentUser
-    this.loginUser.password = "password"
+    // this.loginUser.password = "password"
+    
   }
 
   StartReg(){
-    console.log("StartReg")
     this.startReg = true
     this.updateReg.emit({value: true})
   }
 
   checkUser(){
-    console.log("Check User")
-    this._userService.checkUser(this.loginUser, this.LookupCU(function(){ this.notifyLoggedIn()}))
+    var self = this
+    this._userService.errors = []
+    this._userService.checkUser(this.loginUser, (result)=>{
+        self.notifyLoggedIn();
+    })
   }
 
-  LookupCU(callback){
-    console.log("Lookup User")
-    this._userService.lookupCurrentUser()
-  }
-
-  notifyLoggedIn(callback){
-    console.log("emitting")
+  notifyLoggedIn(callback?){
     this.login.emit("true")
   }
 }
